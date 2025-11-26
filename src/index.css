@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
+
+/* --- Reset e Base --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+/* --- Stile del Body con Sfondo Stellato Aesthetic --- */
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #ffb3d9; 
+  background-image: 
+    /* 🌠 STELLE GRANDI e LUMINOSE */
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 1) 0%, transparent 1.2%),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 1) 0%, transparent 1.2%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 1) 0%, transparent 1.2%),
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 1) 0%, transparent 1.2%),
+    radial-gradient(circle at 90% 70%, rgba(255, 255, 255, 1) 0%, transparent 1.2%),
+    radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 1) 0%, transparent 1.2%),
+    radial-gradient(circle at 70% 90%, rgba(255, 255, 255, 1) 0%, transparent 1.2%),
+    
+    /* ✨ STELLE MEDIE */
+    radial-gradient(circle at 25% 15%, rgba(255, 255, 255, 0.7) 0%, transparent 0.7%),
+    radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.7) 0%, transparent 0.7%),
+    radial-gradient(circle at 45% 75%, rgba(255, 255, 255, 0.7) 0%, transparent 0.7%),
+    radial-gradient(circle at 85% 55%, rgba(255, 255, 255, 0.7) 0%, transparent 0.7%),
+    radial-gradient(circle at 35% 85%, rgba(255, 255, 255, 0.7) 0%, transparent 0.7%),
+    
+    /* 💫 STELLE PICCOLE */
+    radial-gradient(circle at 12% 55%, rgba(255, 255, 255, 0.5) 0%, transparent 0.4%),
+    radial-gradient(circle at 88% 45%, rgba(255, 255, 255, 0.5) 0%, transparent 0.4%),
+    radial-gradient(circle at 48% 12%, rgba(255, 255, 255, 0.5) 0%, transparent 0.4%),
+    
+    /* 🌸 Bagliori soffusi Pink Nebula */
+    radial-gradient(ellipse at 30% 30%, rgba(255, 200, 230, 0.5) 0%, transparent 35%),
+    radial-gradient(ellipse at 70% 70%, rgba(255, 180, 220, 0.5) 0%, transparent 35%),
+    radial-gradient(ellipse at 15% 85%, rgba(255, 210, 240, 0.4) 0%, transparent 40%),
+    
+    /* 💖 Gradiente Base Soffuso */
+    linear-gradient(135deg, #fce9fc 0%, #ffc2dc 50%, #ffb3d9 100%);
+  
+  background-attachment: fixed;
+  background-size: 100% 100%;
+}
+
+/* Animazione (Non attiva di default, ma pronta se la applichi ad elementi) */
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* --- Layout Contenitore --- */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 80px;
+  padding-bottom: 20px;
+}
+
+/* --- Stili per Font --- */
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+h3, h2, h1 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+p, button {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* --- Grid Prodotti --- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Media Query per Mobile */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+}
