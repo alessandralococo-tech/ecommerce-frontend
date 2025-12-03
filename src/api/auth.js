@@ -46,17 +46,6 @@ export const login = async (email, password) => {
     }
 
     const data = await response.json();
-    
-    // Salva token e user in localStorage
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    
-    return data;
-  } catch (error) {
-    console.error("Errore login:", error);
-    throw error;
-  }
-};
 
 // Logout
 export const logout = () => {
