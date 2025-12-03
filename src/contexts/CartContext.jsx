@@ -1,6 +1,5 @@
 import React, { createContext, useReducer, useContext, useEffect } from "react";
-import { getCartFromDB, saveCartToDB } from "../utils/indexedDB"; // funzioni per leggere/salvare il carrello su IndexedDB
-import { createOrder } from "../api/cart"; // funzione per creare un ordine sul server
+import { createOrder } from "../api/cart";
 
 // Tipi di azione per il reducer
 const ADD_ITEM = "ADD_ITEM";
@@ -8,6 +7,9 @@ const UPDATE_QUANTITY = "UPDATE_QUANTITY";
 const REMOVE_ITEM = "REMOVE_ITEM";
 const CLEAR_CART = "CLEAR_CART";
 const SET_CART = "SET_CART";
+
+// Chiave per il localStorage
+const CART_STORAGE_KEY = "starshop_cart";
 
 // Reducer del carrello che gestisce tutte le modifiche allo stato
 const cartReducer = (state, action) => {
@@ -40,7 +42,7 @@ const cartReducer = (state, action) => {
     case UPDATE_QUANTITY: {
       const { productId, quantity } = action.payload;
 
-      // Controlla la quantità e se è 0 o meno, rimuovi l'elemento
+      // Se la quantità è 0 o meno, rimuovi l'elemento
       if (quantity <= 0) {
         return {
           ...state,
@@ -53,7 +55,7 @@ const cartReducer = (state, action) => {
         ...state,
         items: state.items.map((item) =>
           item.product.id === productId
-            ? { ...item, quantity } // aggiorna solo l'elemento corrispondente
+            ? { ...item, quantity }
             : item
         )
       };
@@ -84,23 +86,25 @@ const CartContext = createContext();
 
 // Provider che avvolge l'app e rende disponibile il carrello
 export const CartProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, { items: [] }); // inizializza il carrello vuoto
+  // Inizializza il carrello caricando da localStorage
+  const initialState = () => {
+    try {
+      const saved = localStorage.getItem(CART_STORAGE_KEY);
+      return { items: saved ? JSON.parse(saved) : [] };
+    } catch (error) {
+      console.error("Errore caricamento carrello:", error);
+      return { items: [] };
+    }
+  };
 
-  // Carica il carrello dal DB all'avvio
-  useEffect(() => {
-    const loadCart = async () => {
-      const savedCart = await getCartFromDB();
-      if (savedCart && savedCart.length > 0) {
-        dispatch({ type: SET_CART, payload: savedCart }); // aggiorna lo stato con il DB
-      }
-    };
-    loadCart();
-  }, []);
+  const [state, dispatch] = useReducer(cartReducer, null, initialState);
 
-  // Salva il carrello sul DB ogni volta che cambia
+  // Salva il carrello in localStorage ogni volta che cambia
   useEffect(() => {
-    if (state.items.length >= 0) {
-      saveCartToDB(state.items);
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state.items));
+    } catch (error) {
+      console.error("Errore salvataggio carrello:", error);
     }
   }, [state.items]);
 
@@ -123,25 +127,40 @@ export const CartProvider = ({ children }) => {
 
   const checkout = async (shippingData) => {
     if (state.items.length === 0) {
-      throw new Error("Il carrello è vuoto"); // non si può fare il checkout se è vuoto
+      throw new Error("Il carrello è vuoto");
     }
-    const order = await createOrder(state.items, shippingData); // invia ordine al server
-    clearCart(); // svuota il carrello dopo l'ordine
+    const order = await createOrder(state.items, shippingData);
+    clearCart();
     return order;
+  };
+
+  // Calcola il totale degli articoli
+  const getTotalItems = () => {
+    return state.items.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  // Calcola il totale del prezzo
+  const getTotalPrice = () => {
+    return state.items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    );
   };
 
   return (
     <CartContext.Provider
       value={{
-        cart: state, // stato del carrello
+        cart: state,
         addItem,
         updateQuantity,
         removeItem,
         clearCart,
-        checkout
+        checkout,
+        getTotalItems,
+        getTotalPrice
       }}
     >
-      {children} {/* rende il carrello disponibile a tutti i componenti figli */}
+      {children}
     </CartContext.Provider>
   );
 };

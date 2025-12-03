@@ -1,7 +1,9 @@
 const BASE_URL = "http://localhost:8000/api";
 
 export const createOrder = async (cartItems, shippingData) => {
-  try {
+
+    const token = localStorage.getItem("access_token");
+
     const items = cartItems.map((item) => ({
       product_id: item.product.id,
       quantity: item.quantity,
@@ -18,10 +20,14 @@ export const createOrder = async (cartItems, shippingData) => {
       discount_code: shippingData.discountCode || null,
     };
 
-    const response = await fetch(`${BASE_URL}/orders`, {
+    console.log("access_token", token);
+
+  try {
+    const response = await fetch(`${BASE_URL}/orders/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(payload),
     });

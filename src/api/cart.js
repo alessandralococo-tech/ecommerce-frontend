@@ -2,8 +2,8 @@ const BASE_URL = "http://localhost:8000/api";
 
 // Crea un ordine chiamando il backend
 export const createOrder = async (cartItems, shippingData) => {
-  try {
-    const items = cartItems.map((item) => ({
+  const token = localStorage.getItem("access_token");
+  const items = cartItems.map((item) => ({
       product_id: item.product.id,
       quantity: item.quantity,
     }));
@@ -19,16 +19,18 @@ export const createOrder = async (cartItems, shippingData) => {
       discount_code: shippingData.discountCode || null,
     };
 
+  try {
     const response = await fetch(`${BASE_URL}/orders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
-      throw new Error("Errore nella creazione dell'ordine");
+      throw new Error("ciao");
     }
 
     return await response.json();

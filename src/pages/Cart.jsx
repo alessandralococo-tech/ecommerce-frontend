@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 
 export default function Cart() {
-  const { cart, updateQuantity, removeItem, clearCart, checkout } = useCart();
+  const { cart, updateQuantity, removeItem, clearCart } = useCart();
   const navigate = useNavigate();
   const cardRef = useRef(null);
   const [stars, setStars] = React.useState([]);
@@ -22,23 +22,9 @@ export default function Cart() {
     }
   }, [cart.items.length]);
 
-  const handleCheckout = async () => {
-    try {
-      const shippingData = {
-        address: "Via Roma 123",
-        city: "Roma",
-        postalCode: "00100",
-        state: "RM",
-        country: "Italy",
-        notes: "",
-        discountCode: null
-      };
-      const order = await checkout(shippingData);
-      alert(`✨ Ordine creato con successo! Numero ordine: ${order.order_number}`);
-      navigate("/shop");
-    } catch (err) {
-      alert("Errore: " + err.message);
-    }
+  const handleCheckout = () => {
+    // Reindirizza alla pagina di checkout invece di creare l'ordine qui
+    navigate("/checkout");
   };
 
   const subtotal = cart.items.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
@@ -66,7 +52,8 @@ export default function Cart() {
             fontWeight: "bold",
             cursor: "pointer",
             fontSize: "1.1rem",
-            boxShadow: "0 4px 15px rgba(255, 77, 171, 0.3)"
+            boxShadow: "0 4px 15px rgba(255, 77, 171, 0.3)",
+            transition: "all 0.3s"
           }}
           onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
           onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
@@ -80,7 +67,7 @@ export default function Cart() {
   return (
     <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px", position: "relative" }}>
       <button
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/shop")}
         style={{
           marginBottom: "30px",
           padding: "10px 20px",
@@ -93,8 +80,14 @@ export default function Cart() {
           fontWeight: "600",
           transition: "all 0.3s",
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = "#ff4dab"; e.currentTarget.style.color = "#fff"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255, 77, 171, 0.1)"; e.currentTarget.style.color = "#ff4dab"; }}
+        onMouseEnter={(e) => { 
+          e.currentTarget.style.background = "#ff4dab"; 
+          e.currentTarget.style.color = "#fff"; 
+        }}
+        onMouseLeave={(e) => { 
+          e.currentTarget.style.background = "rgba(255, 77, 171, 0.1)"; 
+          e.currentTarget.style.color = "#ff4dab"; 
+        }}
       >
         ← Torna ai prodotti
       </button>
@@ -168,7 +161,12 @@ export default function Cart() {
               {/* Info prodotto */}
               <div style={{ flex: 1 }}>
                 <h3 
-                  style={{ margin: "0 0 5px 0", color: "#ff4dab", cursor: "pointer" }}
+                  style={{ 
+                    margin: "0 0 5px 0", 
+                    color: "#ff4dab", 
+                    cursor: "pointer",
+                    fontSize: "1.2rem"
+                  }}
                   onClick={() => navigate(`/products/${item.product.id}`)}
                 >
                   {item.product.name}
@@ -192,12 +190,13 @@ export default function Cart() {
                       border: "none",
                       borderRadius: "8px",
                       cursor: "pointer",
-                      fontWeight: "bold"
+                      fontWeight: "bold",
+                      fontSize: "1.2rem"
                     }}
                   >
                     -
                   </button>
-                  <span style={{ minWidth: "30px", textAlign: "center", fontWeight: "600" }}>
+                  <span style={{ minWidth: "30px", textAlign: "center", fontWeight: "600", fontSize: "1.1rem" }}>
                     {item.quantity}
                   </span>
                   <button
@@ -211,7 +210,8 @@ export default function Cart() {
                       border: "none",
                       borderRadius: "8px",
                       cursor: item.quantity >= item.product.available_quantity ? "not-allowed" : "pointer",
-                      fontWeight: "bold"
+                      fontWeight: "bold",
+                      fontSize: "1.2rem"
                     }}
                   >
                     +
@@ -234,7 +234,8 @@ export default function Cart() {
                     color: "#fff",
                     cursor: "pointer",
                     fontSize: "0.9rem",
-                    fontWeight: "600"
+                    fontWeight: "600",
+                    transition: "all 0.3s"
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.background = "#dc2626"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "#ef4444"}
@@ -331,7 +332,8 @@ export default function Cart() {
               borderRadius: "12px",
               color: "#ef4444",
               cursor: "pointer",
-              fontWeight: "600"
+              fontWeight: "600",
+              transition: "all 0.3s"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "#ef4444";

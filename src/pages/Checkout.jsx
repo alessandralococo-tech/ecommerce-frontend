@@ -117,8 +117,27 @@ export default function CheckoutPage() {
   const total = subtotal + shippingCost;
 
   if (cart.items.length === 0) {
-    return null; // Il redirect è già gestito dall'useEffect
+    return null;
   }
+
+  const inputStyle = {
+    width: "100%",
+    padding: "12px",
+    border: "2px solid rgba(255, 121, 198, 0.3)",
+    borderRadius: "10px",
+    fontSize: "1rem",
+    outline: "none",
+    transition: "all 0.3s",
+    color: "#2d2d2d",
+    boxSizing: "border-box"
+  };
+
+  const labelStyle = {
+    display: "block",
+    marginBottom: "8px",
+    fontWeight: "600",
+    color: "#2d2d2d"
+  };
 
   return (
     <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px", position: "relative" }}>
@@ -136,8 +155,14 @@ export default function CheckoutPage() {
           fontWeight: "600",
           transition: "all 0.3s",
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = "#ff4dab"; e.currentTarget.style.color = "#fff"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255, 77, 171, 0.1)"; e.currentTarget.style.color = "#ff4dab"; }}
+        onMouseEnter={(e) => { 
+          e.currentTarget.style.background = "#ff4dab"; 
+          e.currentTarget.style.color = "#fff"; 
+        }}
+        onMouseLeave={(e) => { 
+          e.currentTarget.style.background = "rgba(255, 77, 171, 0.1)"; 
+          e.currentTarget.style.color = "#ff4dab"; 
+        }}
       >
         ← Torna al carrello
       </button>
@@ -186,6 +211,151 @@ export default function CheckoutPage() {
           </h2>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            {/* Indirizzo */}
+            <div>
+              <label style={labelStyle}>Indirizzo *</label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Via Roma 123"
+                required
+                style={{
+                  ...inputStyle,
+                  border: errors.address ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)"
+                }}
+                onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
+                onBlur={(e) => e.target.style.borderColor = errors.address ? "#ef4444" : "rgba(255, 121, 198, 0.3)"}
+              />
+              {errors.address && (
+                <p style={{ color: "#ef4444", fontSize: "0.9rem", marginTop: "5px", margin: "5px 0 0 0" }}>
+                  {errors.address}
+                </p>
+              )}
+            </div>
+
+            {/* Città */}
+            <div>
+              <label style={labelStyle}>Città *</label>
+              <input
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                placeholder="Roma"
+                required
+                style={{
+                  ...inputStyle,
+                  border: errors.city ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)"
+                }}
+                onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
+                onBlur={(e) => e.target.style.borderColor = errors.city ? "#ef4444" : "rgba(255, 121, 198, 0.3)"}
+              />
+              {errors.city && (
+                <p style={{ color: "#ef4444", fontSize: "0.9rem", marginTop: "5px", margin: "5px 0 0 0" }}>
+                  {errors.city}
+                </p>
+              )}
+            </div>
+
+            {/* CAP e Provincia */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+              <div>
+                <label style={labelStyle}>CAP *</label>
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={formData.postalCode}
+                  onChange={handleChange}
+                  placeholder="00100"
+                  required
+                  maxLength="5"
+                  style={{
+                    ...inputStyle,
+                    border: errors.postalCode ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)"
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
+                  onBlur={(e) => e.target.style.borderColor = errors.postalCode ? "#ef4444" : "rgba(255, 121, 198, 0.3)"}
+                />
+                {errors.postalCode && (
+                  <p style={{ color: "#ef4444", fontSize: "0.9rem", marginTop: "5px", margin: "5px 0 0 0" }}>
+                    {errors.postalCode}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label style={labelStyle}>Provincia</label>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  placeholder="RM"
+                  maxLength="2"
+                  style={inputStyle}
+                  onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
+                  onBlur={(e) => e.target.style.borderColor = "rgba(255, 121, 198, 0.3)"}
+                />
+              </div>
+            </div>
+
+            {/* Paese */}
+            <div>
+              <label style={labelStyle}>Paese *</label>
+              <select
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                required
+                style={{
+                  ...inputStyle,
+                  cursor: "pointer"
+                }}
+                onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
+                onBlur={(e) => e.target.style.borderColor = "rgba(255, 121, 198, 0.3)"}
+              >
+                <option value="Italy">Italia</option>
+                <option value="France">Francia</option>
+                <option value="Germany">Germania</option>
+                <option value="Spain">Spagna</option>
+              </select>
+            </div>
+
+            {/* Note */}
+            <div>
+              <label style={labelStyle}>Note (opzionale)</label>
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleChange}
+                placeholder="Suona il campanello, scala B..."
+                rows="3"
+                style={{
+                  ...inputStyle,
+                  resize: "vertical",
+                  fontFamily: "inherit"
+                }}
+                onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
+                onBlur={(e) => e.target.style.borderColor = "rgba(255, 121, 198, 0.3)"}
+              />
+            </div>
+
+            {/* Codice sconto */}
+            <div>
+              <label style={labelStyle}>Codice sconto (opzionale)</label>
+              <input
+                type="text"
+                name="discountCode"
+                value={formData.discountCode}
+                onChange={handleChange}
+                placeholder="SUMMER2024"
+                style={inputStyle}
+                onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
+                onBlur={(e) => e.target.style.borderColor = "rgba(255, 121, 198, 0.3)"}
+              />
+            </div>
           </form>
         </div>
 
@@ -194,6 +364,68 @@ export default function CheckoutPage() {
           <h2 style={{ color: "#ff4dab", fontSize: "1.8rem", marginBottom: "25px" }}>
             📋 Riepilogo ordine
           </h2>
+
+          {/* Lista prodotti */}
+          <div style={{ maxHeight: "300px", overflowY: "auto", marginBottom: "20px" }}>
+            {cart.items.map((item) => (
+              <div 
+                key={item.product.id} 
+                style={{
+                  display: "flex",
+                  gap: "15px",
+                  marginBottom: "15px",
+                  padding: "10px",
+                  background: "rgba(255, 77, 171, 0.05)",
+                  borderRadius: "10px"
+                }}
+              >
+                <img
+                  src={item.product.image_url || "https://via.placeholder.com/60"}
+                  alt={item.product.name}
+                  style={{ 
+                    width: "60px", 
+                    height: "60px", 
+                    objectFit: "cover", 
+                    borderRadius: "8px" 
+                  }}
+                />
+                <div style={{ flex: 1 }}>
+                  <p style={{ margin: "0 0 5px 0", fontWeight: "600", color: "#2d2d2d" }}>
+                    {item.product.name}
+                  </p>
+                  <p style={{ margin: 0, color: "#666", fontSize: "0.9rem" }}>
+                    €{item.product.price.toFixed(2)} × {item.quantity}
+                  </p>
+                </div>
+                <p style={{ fontWeight: "bold", color: "#ff4dab" }}>
+                  €{(item.product.price * item.quantity).toFixed(2)}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Totali */}
+          <div style={{ borderTop: "2px solid rgba(255, 121, 198, 0.2)", paddingTop: "15px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+              <span style={{ color: "#666" }}>Subtotale:</span>
+              <strong>€{subtotal.toFixed(2)}</strong>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+              <span style={{ color: "#666" }}>Spedizione:</span>
+              <strong style={{ color: shippingCost === 0 ? "#10b981" : "#2d2d2d" }}>
+                {shippingCost === 0 ? "GRATIS ✓" : `€${shippingCost.toFixed(2)}`}
+              </strong>
+            </div>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              paddingTop: "15px",
+              borderTop: "2px solid rgba(255, 121, 198, 0.2)"
+            }}>
+              <span style={{ fontSize: "1.3rem", fontWeight: "700" }}>Totale:</span>
+              <strong style={{ fontSize: "2rem", color: "#ff4dab" }}>€{total.toFixed(2)}</strong>
+            </div>
+          </div>
 
           {/* Bottone Paga */}
           <button
@@ -245,6 +477,11 @@ export default function CheckoutPage() {
         @keyframes twinkle {
           0%,100% {opacity: 0; transform: scale(0.5);}
           50% {opacity: 1; transform: scale(1);}
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+          color: #aaa;
         }
       `}</style>
     </div>
