@@ -70,24 +70,6 @@ export const getToken = () => {
   return localStorage.getItem("access_token");
 };
 
-// Verifica token con backend
-export const verifyToken = async () => {
-  try {
-    const token = getToken();
-    if (!token) return null;
-
-    const response = await fetch(`${BASE_URL}/users/verify-token`, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      logout();
-      return null;
-    }
-
     const data = await response.json();
     return data.user;
   } catch (error) {
