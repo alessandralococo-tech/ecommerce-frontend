@@ -1,9 +1,11 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
 
 export default function ProductCard({ product }) {
   const cardRef = useRef(null);
   const navigate = useNavigate();
+  const { addItem } = useCart();
 
   const createStar = (x, y) => {
     if (!cardRef.current) return;
@@ -40,8 +42,19 @@ export default function ProductCard({ product }) {
   };
 
   const handleAddToCart = (e) => {
-    e.stopPropagation(); // Previene la navigazione quando si clicca sul bottone
-    console.log(`Aggiunto prodotto ${product.id} al carrello!`);
+    e.stopPropagation();
+    addItem(product, 1);
+    
+    // Feedback visivo
+    const button = e.currentTarget;
+    const originalText = button.textContent;
+    button.textContent = "✓ Aggiunto!";
+    button.style.background = "linear-gradient(90deg, #10b981, #059669)";
+    
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.style.background = "linear-gradient(90deg, #ff4dab, #ff79c6)";
+    }, 1500);
   };
 
   return (

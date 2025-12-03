@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons'; 
+import { Link } from "react-router-dom"; // <-- Import Link
 
 export default function Footer() {
   
@@ -51,15 +52,16 @@ export default function Footer() {
           ⭐ StarShop ⭐
         </h2>
         
+        {/* Link pagine */}
         <div style={{ display: "flex", justifyContent: "center", gap: "25px", marginBottom: "25px" }}>
-            <a href="#" style={{ color: "#fce9fc", textDecoration: "none", fontSize: "0.95rem", fontWeight: "500" }}>Informazioni</a>
-            <a href="#" style={{ color: "#fce9fc", textDecoration: "none", fontSize: "0.95rem", fontWeight: "500" }}>Contatti</a>
-            <a href="#" style={{ color: "#fce9fc", textDecoration: "none", fontSize: "0.95rem", fontWeight: "500" }}>Termini</a>
-            <a href="#" style={{ color: "#fce9fc", textDecoration: "none", fontSize: "0.95rem", fontWeight: "500" }}>Privacy</a>
+            <Link to="/information" style={{ color: "#fce9fc", textDecoration: "none", fontSize: "0.95rem", fontWeight: "500" }}>Informazioni</Link>
+            <Link to="/contacts" style={{ color: "#fce9fc", textDecoration: "none", fontSize: "0.95rem", fontWeight: "500" }}>Contatti</Link>
+            <Link to="/terms" style={{ color: "#fce9fc", textDecoration: "none", fontSize: "0.95rem", fontWeight: "500" }}>Termini</Link>
+            <Link to="/privacy" style={{ color: "#fce9fc", textDecoration: "none", fontSize: "0.95rem", fontWeight: "500" }}>Privacy</Link>
         </div>
         
+        {/* Icone social */}
         <div style={{ display: "flex", justifyContent: "center", gap: "25px", marginBottom: "20px" }}>
-          {/* ICONE */}
           <a 
             href="https://facebook.com" 
             style={socialIconStyle}

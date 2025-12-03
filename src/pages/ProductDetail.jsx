@@ -1,17 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProductById } from "../API/products";
+import { getProductById } from "../api/products";
+import { useCart } from "../contexts/CartContext";
 
-export default function ProductDetailPage() {
+export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addItem } = useCart();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
   const cardRef = useRef(null);
-  const [cardSize, setCardSize] = useState({ width: 0, height: 0 });
   const [stars, setStars] = useState([]);
 
   useEffect(() => {
@@ -23,12 +24,9 @@ export default function ProductDetailPage() {
     loadProducts();
   }, [id]);
 
-  // Misuriamo la card per posizionare le stelle
   useEffect(() => {
     if (cardRef.current) {
       const { offsetWidth, offsetHeight } = cardRef.current;
-      setCardSize({ width: offsetWidth, height: offsetHeight });
-
       const tempStars = Array.from({ length: 20 }).map(() => ({
         left: Math.random() * offsetWidth,
         top: Math.random() * offsetHeight,
@@ -40,7 +38,8 @@ export default function ProductDetailPage() {
   }, [product]);
 
   const handleAddToCart = () => {
-    console.log(`Aggiunto ${quantity}x ${product.name} al carrello!`);
+    addItem(product, quantity);
+    alert(`✨ ${quantity}x ${product.name} aggiunto al carrello!`);
   };
 
   if (loading) {
@@ -69,7 +68,7 @@ export default function ProductDetailPage() {
     <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px", position: "relative" }}>
       {/* Bottone Indietro */}
       <button
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/shop")}
         style={{ marginBottom: "30px", padding: "10px 20px", background: "rgba(255, 77, 171, 0.1)", border: "2px solid #ff4dab", borderRadius: "10px", color: "#ff4dab", cursor: "pointer", fontSize: "1rem", fontWeight: "600", transition: "all 0.3s" }}
         onMouseEnter={(e) => { e.currentTarget.style.background = "#ff4dab"; e.currentTarget.style.color = "#fff"; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255, 77, 171, 0.1)"; e.currentTarget.style.color = "#ff4dab"; }}
