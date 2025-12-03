@@ -46,6 +46,17 @@ export const login = async (email, password) => {
     }
 
     const data = await response.json();
+    
+    // Salva token e user in localStorage
+    localStorage.setItem("access_token", data.access_token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+    
+    return data;
+  } catch (error) {
+    console.error("Errore login:", error);
+    throw error;
+  }
+};
 
 // Logout
 export const logout = () => {
@@ -69,6 +80,24 @@ export const getCurrentUser = () => {
 export const getToken = () => {
   return localStorage.getItem("access_token");
 };
+
+// Verifica token con backend
+export const verifyToken = async () => {
+  try {
+    const token = getToken();
+    if (!token) return null;
+
+    const response = await fetch(`${BASE_URL}/users/verify-token`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      logout();
+      return null;
+    }
 
     const data = await response.json();
     return data.user;
