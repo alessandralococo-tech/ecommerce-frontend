@@ -145,23 +145,6 @@ export default function LandingPage() {
           >
             Accedi
           </button>
-
-          {/* Bottone Register */}
-          <button
-            style={{
-              ...buttonStyle,
-              background: "linear-gradient(90deg, #ffb0d4, #ff6bbf)",
-            }}
-            onMouseEnter={(e) =>
-              Object.assign(e.currentTarget.style, buttonHoverStyle)
-            }
-            onMouseLeave={(e) =>
-              Object.assign(e.currentTarget.style, buttonStyle)
-            }
-            onClick={() => navigate("/register")}
-          >
-            Registrati
-          </button>
         </div>
       </div>
 

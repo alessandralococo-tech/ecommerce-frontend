@@ -80,6 +80,21 @@ export default function CheckoutPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Verifica che l'utente sia ancora autenticato
+    if (!isAuthenticated()) {
+      alert("Sessione scaduta. Effettua nuovamente il login.");
+      navigate("/login", { state: { from: "/checkout" } });
+      return;
+    }
+
+    // Verifica che esista il token
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      alert("Sessione non valida. Effettua nuovamente il login.");
+      navigate("/login", { state: { from: "/checkout" } });
+      return;
+    }
+
     if (!validateForm()) {
       alert("Compila correttamente tutti i campi obbligatori");
       return;
@@ -92,8 +107,8 @@ export default function CheckoutPage() {
       const order = await createOrder(cart.items, formData);
       console.log("✅ Ordine creato:", order);
 
-      // FASE 2: Avvia pagamento Stripe
-      const paymentData = await initiatePayment(order.id);
+      // FASE 2: Avvia pagamento Stripe (passando i dati di spedizione)
+      const paymentData = await initiatePayment(order.id, formData);
       console.log("✅ Pagamento avviato:", paymentData);
 
       // Salva order_id per dopo
@@ -107,7 +122,15 @@ export default function CheckoutPage() {
 
     } catch (error) {
       console.error("Errore checkout:", error);
-      alert("Errore durante il checkout: " + error.message);
+      
+      // Gestione specifica per errori di autenticazione
+      if (error.message.includes("authenticated") || error.message.includes("403")) {
+        alert("Sessione scaduta. Effettua nuovamente il login.");
+        navigate("/login", { state: { from: "/checkout" } });
+      } else {
+        alert("Errore durante il checkout: " + error.message);
+      }
+      
       setLoading(false);
     }
   };

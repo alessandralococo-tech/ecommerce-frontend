@@ -15,7 +15,8 @@ export default function RegisterPage() {
     confirmPassword: "",
     first_name: "",
     last_name: "",
-    phone: ""
+    phone: "",
+    role: "customer" // default
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -67,6 +68,9 @@ export default function RegisterPage() {
     }
     if (!formData.last_name || formData.last_name.trim().length < 2) {
       newErrors.last_name = "Inserisci un cognome valido";
+    }
+    if (!formData.role || !["customer", "admin"].includes(formData.role)) {
+      newErrors.role = "Ruolo non valido";
     }
 
     setErrors(newErrors);
@@ -152,163 +156,100 @@ export default function RegisterPage() {
           {/* Nome e Cognome */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
             <div>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#2d2d2d" }}>
-                Nome *
-              </label>
+              <label>Nome *</label>
               <input
                 type="text"
                 name="first_name"
                 value={formData.first_name}
                 onChange={handleChange}
                 placeholder="Mario"
-                required
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: errors.first_name ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)",
-                  borderRadius: "10px",
-                  fontSize: "1rem",
-                  outline: "none",
-                  color: "#2d2d2d"
-                }}
-                onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
-                onBlur={(e) => e.target.style.borderColor = errors.first_name ? "#ef4444" : "rgba(255, 121, 198, 0.3)"}
+                style={{ width: "100%", padding: "12px", borderRadius: "10px", border: errors.first_name ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)" }}
               />
-              <style>{`input::placeholder { color: #aaa; }`}</style>
-              {errors.first_name && <p style={{ color: "#ef4444", fontSize: "0.85rem", marginTop: "5px" }}>{errors.first_name}</p>}
+              {errors.first_name && <p style={{ color: "#ef4444" }}>{errors.first_name}</p>}
             </div>
 
             <div>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#2d2d2d" }}>
-                Cognome *
-              </label>
+              <label>Cognome *</label>
               <input
                 type="text"
                 name="last_name"
                 value={formData.last_name}
                 onChange={handleChange}
                 placeholder="Rossi"
-                required
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: errors.last_name ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)",
-                  borderRadius: "10px",
-                  fontSize: "1rem",
-                  outline: "none",
-                  color: "#2d2d2d"
-                }}
-                onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
-                onBlur={(e) => e.target.style.borderColor = errors.last_name ? "#ef4444" : "rgba(255, 121, 198, 0.3)"}
+                style={{ width: "100%", padding: "12px", borderRadius: "10px", border: errors.last_name ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)" }}
               />
-              {errors.last_name && <p style={{ color: "#ef4444", fontSize: "0.85rem", marginTop: "5px" }}>{errors.last_name}</p>}
+              {errors.last_name && <p style={{ color: "#ef4444" }}>{errors.last_name}</p>}
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#2d2d2d" }}>
-              Email *
-            </label>
+            <label>Email *</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="tu@esempio.com"
-              required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: errors.email ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)",
-                borderRadius: "10px",
-                fontSize: "1rem",
-                outline: "none",
-                color: "#2d2d2d"
-              }}
-              onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
-              onBlur={(e) => e.target.style.borderColor = errors.email ? "#ef4444" : "rgba(255, 121, 198, 0.3)"}
+              style={{ width: "100%", padding: "12px", borderRadius: "10px", border: errors.email ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)" }}
             />
-            {errors.email && <p style={{ color: "#ef4444", fontSize: "0.85rem", marginTop: "5px" }}>{errors.email}</p>}
+            {errors.email && <p style={{ color: "#ef4444" }}>{errors.email}</p>}
           </div>
 
           {/* Telefono */}
           <div>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#2d2d2d" }}>
-              Telefono
-            </label>
+            <label>Telefono</label>
             <input
               type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
               placeholder="+39 123 456 7890"
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "2px solid rgba(255, 121, 198, 0.3)",
-                borderRadius: "10px",
-                fontSize: "1rem",
-                outline: "none",
-                color: "#2d2d2d"
-              }}
-              onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
-              onBlur={(e) => e.target.style.borderColor = "rgba(255, 121, 198, 0.3)"}
+              style={{ width: "100%", padding: "12px", borderRadius: "10px", border: "2px solid rgba(255, 121, 198, 0.3)" }}
             />
+          </div>
+
+          {/* Ruolo */}
+          <div>
+            <label>Ruolo *</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              style={{ width: "100%", padding: "12px", borderRadius: "10px", border: errors.role ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)" }}
+            >
+              <option value="customer">Cliente</option>
+              <option value="admin">Admin</option>
+            </select>
+            {errors.role && <p style={{ color: "#ef4444" }}>{errors.role}</p>}
           </div>
 
           {/* Password */}
           <div>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#2d2d2d" }}>
-              Password *
-            </label>
+            <label>Password *</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••"
-              required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: errors.password ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)",
-                borderRadius: "10px",
-                fontSize: "1rem",
-                outline: "none",
-                color: "#2d2d2d"
-              }}
-              onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
-              onBlur={(e) => e.target.style.borderColor = errors.password ? "#ef4444" : "rgba(255, 121, 198, 0.3)"}
+              style={{ width: "100%", padding: "12px", borderRadius: "10px", border: errors.password ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)" }}
             />
-            {errors.password && <p style={{ color: "#ef4444", fontSize: "0.85rem", marginTop: "5px" }}>{errors.password}</p>}
+            {errors.password && <p style={{ color: "#ef4444" }}>{errors.password}</p>}
           </div>
 
           {/* Conferma Password */}
           <div>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#2d2d2d" }}>
-              Conferma Password *
-            </label>
+            <label>Conferma Password *</label>
             <input
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="••••••••"
-              required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: errors.confirmPassword ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)",
-                borderRadius: "10px",
-                fontSize: "1rem",
-                outline: "none",
-                color: "#2d2d2d"
-              }}
-              onFocus={(e) => e.target.style.borderColor = "#ff4dab"}
-              onBlur={(e) => e.target.style.borderColor = errors.confirmPassword ? "#ef4444" : "rgba(255, 121, 198, 0.3)"}
+              style={{ width: "100%", padding: "12px", borderRadius: "10px", border: errors.confirmPassword ? "2px solid #ef4444" : "2px solid rgba(255, 121, 198, 0.3)" }}
             />
-            {errors.confirmPassword && <p style={{ color: "#ef4444", fontSize: "0.85rem", marginTop: "5px" }}>{errors.confirmPassword}</p>}
+            {errors.confirmPassword && <p style={{ color: "#ef4444" }}>{errors.confirmPassword}</p>}
           </div>
 
           {/* Bottone Registrazione */}
@@ -325,21 +266,7 @@ export default function RegisterPage() {
               fontSize: "1.1rem",
               fontWeight: "bold",
               cursor: loading ? "not-allowed" : "pointer",
-              boxShadow: loading ? "none" : "0 4px 15px rgba(255, 77, 171, 0.4)",
-              transition: "all 0.3s",
               marginTop: "10px"
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) {
-                e.currentTarget.style.transform = "scale(1.02)";
-                e.currentTarget.style.boxShadow = "0 6px 20px rgba(255, 77, 171, 0.5)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.boxShadow = "0 4px 15px rgba(255, 77, 171, 0.4)";
-              }
             }}
           >
             {loading ? "Registrazione in corso..." : "✨ Registrati"}
@@ -361,16 +288,7 @@ export default function RegisterPage() {
               borderRadius: "10px",
               fontSize: "1rem",
               fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#ff4dab";
-              e.currentTarget.style.color = "#fff";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "#ff4dab";
+              cursor: "pointer"
             }}
           >
             Accedi
@@ -378,7 +296,6 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Animazioni */}
       <style>{`
         @keyframes twinkle {
           0%,100% {opacity: 0; transform: scale(0.5);}

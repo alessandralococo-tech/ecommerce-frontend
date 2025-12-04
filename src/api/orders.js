@@ -46,13 +46,28 @@ export const createOrder = async (cartItems, shippingData) => {
 };
 
 //Avvia pagamento Stripe
-export const initiatePayment = async (orderId) => {
+export const initiatePayment = async (orderId, shippingData) => {
+  const token = localStorage.getItem("access_token");
+  
+  const payload = {
+    shipping_address: shippingData.address,
+    shipping_city: shippingData.city,
+    shipping_postal_code: shippingData.postalCode,
+    shipping_state: shippingData.state || "",
+    shipping_country: shippingData.country,
+    notes: shippingData.notes || "",
+    success_url: `${window.location.origin}/success`,
+    cancel_url: `${window.location.origin}/checkout`
+  };
+  
   try {
     const response = await fetch(`${BASE_URL}/orders/${orderId}/initiate-payment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
+      body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
@@ -71,11 +86,14 @@ export const initiatePayment = async (orderId) => {
 
 //Conferma pagamento
 export const confirmPayment = async (orderId, sessionId) => {
+  const token = localStorage.getItem("access_token");
+  
   try {
     const response = await fetch(`${BASE_URL}/orders/${orderId}/confirm-payment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({ session_id: sessionId }),
     });
@@ -95,8 +113,14 @@ export const confirmPayment = async (orderId, sessionId) => {
 
 // Ottieni dettagli ordine
 export const getOrderDetails = async (orderId) => {
+  const token = localStorage.getItem("access_token");
+  
   try {
-    const response = await fetch(`${BASE_URL}/orders/${orderId}`);
+    const response = await fetch(`${BASE_URL}/orders/${orderId}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

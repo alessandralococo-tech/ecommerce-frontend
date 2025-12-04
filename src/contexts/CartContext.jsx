@@ -165,7 +165,7 @@ export const CartProvider = ({ children }) => {
   );
 };
 
-// Hook personalizzato per usare il carrello facilmente nei componenti
+// Hook per usare il carrello nei componenti
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {

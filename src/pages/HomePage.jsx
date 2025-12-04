@@ -2,17 +2,23 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { getProducts } from "../api/products";
 import { getCategories } from "../api/categories";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Stato per le stelle
+  // Stato per le stelle magiche
   const [magicStars, setMagicStars] = useState([]);
 
-  useEffect(() => { 
+  useEffect(() => {
     async function loadData() {
       setLoading(true);
       const [productsData, categoriesData] = await Promise.all([
@@ -30,7 +36,11 @@ export default function HomePage() {
     ? products.filter(p => p.category_id === selectedCategory)
     : products;
 
-  // Funzione per creare le stelle
+  const handleDeleteProduct = async (productId) => {
+    await deleteProduct(productId, user.token);
+    setProducts((prev) => prev.filter((p) => p.id !== productId));
+  };
+
   const triggerMagic = (id) => {
     const newStars = Array.from({ length: 12 }).map(() => ({
       id: Date.now() + Math.random(),
@@ -43,7 +53,7 @@ export default function HomePage() {
     setMagicStars((prev) => [...prev, ...newStars]);
     setTimeout(() => {
       setMagicStars((prev) => prev.filter((s) => !newStars.includes(s)));
-    }, 1200); // spariscono dopo 1,2s
+    }, 1200);
   };
 
   const handleCategoryClick = (id) => {
@@ -53,12 +63,7 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div style={{ 
-        textAlign: "center", 
-        padding: "60px 20px",
-        fontSize: "1.2rem",
-        color: "#ff4dab"
-      }}>
+      <div style={{ textAlign: "center", padding: "60px 20px", fontSize: "1.2rem", color: "#ff4dab" }}>
         ⭐ Caricamento prodotti...
       </div>
     );
@@ -135,11 +140,35 @@ export default function HomePage() {
       </div>
 
       {/* Griglia prodotti */}
-      <div className="product-grid">
+      <div className="product-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))", gap: "20px" }}>
         {filteredProducts.map((p) => (
-          <ProductCard key={p.id} product={p} />
+          <ProductCard key={p.id} product={p} isAdmin={isAdmin} />
         ))}
       </div>
+
+      {/* Pulsante Crea prodotto (solo admin) */}
+      {isAdmin && (
+        <div style={{ marginTop: "50px", textAlign: "center" }}>
+          <button
+            style={{
+              padding: "12px 20px",
+              borderRadius: "8px",
+              background: "#ff4dab",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "1rem",
+              transition: "all 0.3s"
+            }}
+            onClick={() => navigate("/admin/create-product")}
+            onMouseEnter={(e) => e.currentTarget.style.background = "#ff79c6"}
+            onMouseLeave={(e) => e.currentTarget.style.background = "#ff4dab"}
+          >
+            ➕ Crea nuovo prodotto
+          </button>
+        </div>
+      )}
 
       {/* Animazioni */}
       <style>
