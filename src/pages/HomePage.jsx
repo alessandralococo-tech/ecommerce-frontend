@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
-import { getProducts } from "../api/products";
+import { getProducts, deleteProduct } from "../api/products";
 import { getCategories } from "../api/categories";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -33,12 +33,33 @@ export default function HomePage() {
   }, []);
 
   const filteredProducts = selectedCategory
-    ? products.filter(p => p.category_id === selectedCategory)
+    ? products.filter(p => {
+        // Controllo sia category_id che category?.id per sicurezza
+        return p.category_id === selectedCategory || p.category?.id === selectedCategory;
+      })
     : products;
 
   const handleDeleteProduct = async (productId) => {
-    await deleteProduct(productId, user.token);
-    setProducts((prev) => prev.filter((p) => p.id !== productId));
+    try {
+      // Prendo il token da localStorage
+      const token = localStorage.getItem("access_token");
+      
+      if (!token) {
+        alert("Devi effettuare il login come admin!");
+        return;
+      }
+
+      // Chiamo l'API per eliminare il prodotto
+      await deleteProduct(productId, token);
+      
+      // Aggiorno lo stato locale rimuovendo il prodotto eliminato
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+      
+      alert("✅ Prodotto eliminato con successo!");
+    } catch (error) {
+      console.error("Errore eliminazione prodotto:", error);
+      alert("❌ Errore: " + error.message);
+    }
   };
 
   const triggerMagic = (id) => {
@@ -142,7 +163,11 @@ export default function HomePage() {
       {/* Griglia prodotti */}
       <div className="product-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))", gap: "20px" }}>
         {filteredProducts.map((p) => (
-          <ProductCard key={p.id} product={p} isAdmin={isAdmin} />
+          <ProductCard 
+            key={p.id} 
+            product={p} 
+            onDelete={handleDeleteProduct} // ✅ Passo la funzione corretta
+          />
         ))}
       </div>
 

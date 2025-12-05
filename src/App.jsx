@@ -17,6 +17,7 @@ import Cart from "./pages/Cart";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
+import MyOrdersPage from "./pages/MyOrdersPage";
 import InformationPage from "./pages/InformationPage";
 import ContactsPage from "./pages/ContactsPage";
 import TermsPage from "./pages/TermsPage";
@@ -87,8 +88,7 @@ export default function App() {
                       <Route path="cart" element={<Cart />} />
                       <Route path="checkout" element={<Checkout />} />
                       <Route path="profile" element={<ProfilePage />} />
-                      
-                      {/* Storico ordini utente */}
+                      <Route path="my-orders" element={<MyOrdersPage />} />
 
                       {/* Pagine footer */}
                       <Route path="information" element={<InformationPage />} />

@@ -1,7 +1,6 @@
 const BASE_URL = "http://localhost:8000/api";
 
 export const createOrder = async (cartItems, shippingData) => {
-
     const token = localStorage.getItem("access_token");
 
     const items = cartItems.map((item) => ({
@@ -45,7 +44,7 @@ export const createOrder = async (cartItems, shippingData) => {
   }
 };
 
-//Avvia pagamento Stripe
+// Avvia pagamento Stripe
 export const initiatePayment = async (orderId, shippingData) => {
   const token = localStorage.getItem("access_token");
   
@@ -84,7 +83,7 @@ export const initiatePayment = async (orderId, shippingData) => {
   }
 };
 
-//Conferma pagamento
+// Conferma pagamento
 export const confirmPayment = async (orderId, sessionId) => {
   const token = localStorage.getItem("access_token");
   
@@ -131,6 +130,30 @@ export const getOrderDetails = async (orderId) => {
     return await response.json();
   } catch (error) {
     console.error("Errore getOrderDetails:", error);
+    throw error;
+  }
+};
+
+export const getMyOrders = async () => {
+  const token = localStorage.getItem("access_token");
+  
+  try {
+    const response = await fetch(`${BASE_URL}/orders/`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Errore backend getMyOrders:", errorText);
+      throw new Error("Errore nel recupero degli ordini");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Errore getMyOrders:", error);
     throw error;
   }
 };

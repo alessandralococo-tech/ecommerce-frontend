@@ -16,7 +16,7 @@ export default function RegisterPage() {
     first_name: "",
     last_name: "",
     phone: "",
-    role: "customer" // default
+    role: "customer"
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
